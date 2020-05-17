@@ -54,7 +54,7 @@ public class AddPhotoActivity extends AppCompatActivity {
                 newImageBitmap = (Bitmap) data.getExtras().get("data");
                 imgView.setImageBitmap(newImageBitmap);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Anulowano", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -62,14 +62,14 @@ public class AddPhotoActivity extends AppCompatActivity {
     private void saveOrDiscardRusult() {
         String label = txtLabel.getText().toString();
         if(label.equals("")) {
-            Toast.makeText(this, "bad label", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Błędna etykieta", Toast.LENGTH_LONG).show();
         }
-        if(imgView.getDrawable() == null) {
-            Toast.makeText(this, "bad iamge", Toast.LENGTH_LONG).show();
+        else if(imgView.getDrawable() == null) {
+            Toast.makeText(this, "Zrób zdjęcie", Toast.LENGTH_LONG).show();
         }
         else {
             Comparer.getInstance().addNewSample(new Sample(newImageBitmap, label));
-            Toast.makeText(this, "wszystko ok", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Dodano klasę", Toast.LENGTH_LONG).show();
             finish();
         }
     }

@@ -74,21 +74,28 @@ public class ListViewAdapter extends BaseAdapter {
                 alert.setTitle("Zmiana etykiety");
                 alert.setMessage("Podaj nową etykietę klasy");
                 final EditText input = new EditText(context);
+                input.setText(sample.getLabel());
                 alert.setView(input);
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String newLabel = input.getText().toString();
-                        Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
-                        listItem.textLabel.setText(newLabel);
-                        Toast toast = Toast.makeText(context, "etykieta zmieniona", Toast.LENGTH_SHORT);
-                        toast.show();
+                        if(newLabel.equals("")){
+                            Toast toast = Toast.makeText(context, "Błąd: Podana etykieta jest pusta", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                        else {
+                            Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
+                            listItem.textLabel.setText(newLabel);
+                            Toast toast = Toast.makeText(context, "Etykieta zmieniona", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                     }
                 });
 
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast toast = Toast.makeText(context, "edycja anulowana", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, "Edycja anulowana", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 });
@@ -100,10 +107,11 @@ public class ListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Comparer.getInstance().deleteSample(sample);
-                Toast toast = Toast.makeText(context, "klasa usunięta", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(context, "Klasa została usunięta", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
+        this.notifyDataSetChanged();
 
         return row;
     }

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 String classLabel = comparer.getMostSimilarClass(similarities);
                 txtPredLabel.setText(classLabel);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Anulowano", Toast.LENGTH_LONG).show();
             }
         }
     }
