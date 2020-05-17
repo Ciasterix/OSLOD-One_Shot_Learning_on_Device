@@ -80,6 +80,24 @@ public class Comparer {
         }
     }
 
+    public void changeLabel(String oldLabel, String newLabel) {
+        for(Sample s: samples) {
+            if (s.getLabel().equals(oldLabel)) s.setLabel(newLabel);
+        }
+        renameSampleInInternalMemory(oldLabel, newLabel);
+    }
+
+    public boolean renameSampleInInternalMemory(String oldLabel, String newLabel) {
+        File oldSampleFile = new File(dirPath, oldLabel + ".png");
+        File newSampleFile = new File(dirPath, newLabel + ".png");
+        if (newSampleFile.exists())
+            return false;
+        else {
+            boolean success = oldSampleFile.renameTo(newSampleFile);
+            return success;
+        }
+    }
+
     public float[] predictScores(Bitmap unknownImage) {
         float[] unkownSampleScores = runPrediction(unknownImage);
         float[] similarities = new float[samples.size()];
@@ -93,11 +111,8 @@ public class Comparer {
     public float[] runPrediction(Bitmap bitmap) {
         final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
-
         final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
-
         final float[] scores = outputTensor.getDataAsFloatArray();
-
         return scores;
     }
 
