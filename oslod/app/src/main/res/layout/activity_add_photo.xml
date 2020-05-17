@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <Button
+        android:id="@+id/btnTakePicture"
+        android:layout_width="138dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="27dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="-3dp"
+        android:layout_toStartOf="@+id/btnBrowseImages"
+        android:text="Zrób zdjęcie"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnSaveSample"
+        android:layout_width="119dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="-6dp"
+        android:text="Zapisz"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/newImage"
+        android:layout_width="393dp"
+        android:layout_height="581dp"
+        android:layout_above="@+id/btnTakePicture"
+        android:layout_marginBottom="105dp" />
+
+    <EditText
+        android:id="@+id/addLabel"
+        android:layout_width="226dp"
+        android:layout_height="73dp"
+        android:layout_above="@+id/btnTakePicture"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="91dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="20dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Label" />
+
+</RelativeLayout>
