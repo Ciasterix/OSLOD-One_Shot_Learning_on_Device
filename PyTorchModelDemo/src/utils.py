@@ -1,6 +1,6 @@
 import itertools
 import math
-from typing import List
+from typing import List, Any
 
 import cv2
 import numpy as np
@@ -9,45 +9,48 @@ from sklearn.metrics import f1_score
 from tqdm.auto import tqdm
 
 
-def load_imgs(paths: str) -> np.ndarray:
+def transform_func(images: List[np.ndarray]) -> np.ndarray:
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
-    imgs = []
+    transformed_images = np.array(images).astype(np.float32)
+    transformed_images = np.transpose(transformed_images,
+                                      axes=(0, -1, 1, 2))  # type: ignore
+    for i in range(3):
+        transformed_images[:, i] = (transformed_images[:, i] - mean[i]) / std[i]
+    return transformed_images
+
+
+def load_images(paths: str) -> np.ndarray:
+    images = []
     for path in paths:
         img = cv2.resize(cv2.imread(path), (224, 224))
-        imgs.append(img / img.max())
-    imgs = np.array(imgs).astype(np.float32)
-    imgs = np.transpose(imgs, axes=(0, -1, 1, 2))
-    for i in range(3):
-        imgs[:, i] = (imgs[:, i] - mean[i]) / std[i]
-    return imgs
+        images.append(img / img.max())
+    transformed_images = transform_func(images)
+    return transformed_images
 
 
-def sim_mat(key_imgs: List[np.ndarray], imgs: np.ndarray) -> np.ndarray:
+def sim_mat(key_images: List[np.ndarray], images: np.ndarray) -> np.ndarray:
     scores = []
-    for img in imgs:
+    for img in images:
         cls_score = []
-        for key_img in key_imgs:
+        for key_img in key_images:
             cls_score.append(cosine(key_img, img))
         scores.append(np.argmin(cls_score))
     return np.array(scores)
 
 
 def test_score(pred: np.ndarray, y: np.ndarray) -> List[float]:
-    y = np.array(y)
     scores = []
     unq, count = np.unique(y, return_counts=True)
-    idx = np.cumsum(count)
-
-    weights = 1 / (count - 1)
-    weights = weights / sum(weights)
+    idx = np.cumsum(count)  # type: ignore
     total = math.prod(count)
     for i, keys in enumerate(
             tqdm(itertools.product(*np.split(pred, idx[:-1])), total=total)):
-        rest_imgs = [np.delete(pred[y == cls], i % c, axis=0) for cls, c in
-                     enumerate(count)]
-        rest_imgs = np.concatenate(rest_imgs)
-        sim_score = sim_mat(keys, rest_imgs)
+        rest_images = np.concatenate(
+            [np.delete(pred[y == cls], i % c, axis=0) for cls, c in
+             enumerate(count)]
+        )
+        sim_score = sim_mat(keys, rest_images)
         y_score = np.concatenate(
             [np.delete(y[y == cls], i % c) for cls, c in enumerate(count)])
         score = f1_score(y_true=y_score, y_pred=sim_score, average="weighted")

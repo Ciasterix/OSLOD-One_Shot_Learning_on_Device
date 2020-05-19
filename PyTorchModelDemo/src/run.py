@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torchvision
 
-from src.utils import load_imgs, sim_mat, test_score
+from src.utils import load_images, test_score
 
 model = torchvision.models.resnet18(pretrained=True)  # 0.859, 0.906
 # model = torchvision.models.resnet152(pretrained=True)  # 0.964, 0.920
@@ -18,20 +18,23 @@ model = torchvision.models.resnet18(pretrained=True)  # 0.859, 0.906
 # model = torchvision.models.mnasnet1_0(pretrained=True)  # 0.789, 0.868
 model.eval()
 # example = torch.rand(4, 3, 224, 224)
-# newmodel = torch.nn.Sequential(*(list(model.children())[:-1]), torch.nn.Softmax(1))
+# newmodel = torch.nn.Sequential(*(list(model.children())[:-1]),
+#                                torch.nn.Softmax(1))
 # newmodel = torch.nn.Sequential(*(list(model.children())[:-1]))
 # newmodel = torch.nn.Sequential(model, torch.nn.Softmax(-1))
 newmodel = model
 
-
 # All -> 0.922
 paths = ["candle", "charger", "gloves", "keys", "phone", "tv_remote"]
 paths += ["cats", "dogs"]
-imgs = [load_imgs(glob(os.path.join("imgs", path, "*.jpg"))) for path in paths]
-imgs = np.concatenate([*imgs])
-cls = {i: len(os.listdir(os.path.join("imgs", path))) for i, path in enumerate(paths)}
+paths = ["cats", "dogs"]
+imgs = np.concatenate(
+    [load_images(glob(os.path.join("imgs", path, "*.jpg"))) for path in paths]
+)
+cls = {i: len(os.listdir(os.path.join("imgs", path))) for i, path in
+       enumerate(paths)}
 assert len(imgs) == sum(cls.values())
-y = [c for k, v in cls.items() for c in [k]*v]
+y = np.array([c for k, v in cls.items() for c in [k] * v])
 
 with torch.no_grad():
     pred = newmodel(torch.tensor(imgs)).numpy().squeeze()
