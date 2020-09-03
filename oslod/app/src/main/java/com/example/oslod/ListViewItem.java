@@ -10,6 +10,6 @@ public class ListViewItem {
     TextView textLabel;
     ImageView imgSample;
     ImageButton btnEditLabel;
-    ImageButton btnRemoveSample;
+//    ImageButton btnRemoveSample;
     LinearLayout llMainRow;
 }

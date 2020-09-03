@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class Comparer {
     private static Comparer instance = new Comparer();
-    private final ArrayList<Sample> samples = new ArrayList<>();
+    private ArrayList<Sample> samples = new ArrayList<>();
     private String dirPath;
     private Module module;
 
@@ -135,9 +135,9 @@ public class Comparer {
         return sumProduct / (Math.sqrt(sumASq) * Math.sqrt(sumBSq));
     }
 
-    public void loadModel(Context context, String filename) {
+    public void loadNeuralNet(Context context, String filename) {
         try {
-            module = Module.load(assetFilePath(context, "model.pt"));
+            module = Module.load(assetFilePath(context, filename));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -176,6 +176,10 @@ public class Comparer {
 
     public static Comparer getInstance() {
         return instance;
+    }
+
+    public void setSamples(ArrayList<Sample> samples) {
+        this.samples = samples;
     }
 
     public ArrayList<Sample> getSamples() {

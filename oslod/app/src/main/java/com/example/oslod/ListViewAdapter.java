@@ -3,6 +3,7 @@ package com.example.oslod;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class ListViewAdapter extends BaseAdapter {
             listItem.textLabel = row.findViewById(R.id.txtLabel);
             listItem.imgSample = row.findViewById(R.id.imgSample);
             listItem.btnEditLabel = row.findViewById(R.id.btnEditLabel);
-            listItem.btnRemoveSample = row.findViewById(R.id.btnRemove);
+//            listItem.btnRemoveSample = row.findViewById(R.id.btnRemove);
             row.setTag(listItem);
         }
         else
@@ -65,6 +66,16 @@ public class ListViewAdapter extends BaseAdapter {
 
         listItem.textLabel.setText(sample.getLabel());
         listItem.imgSample.setImageBitmap(sample.getImageBitmap());
+
+//        listItem.textLabel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v)
+//            {
+////                Intent inten = new Intent(getBaseContext(), BrowserActivity.class);
+////                startActivity(inten);
+//                Toast.makeText(context, listItem.textLabel.getText(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         listItem.btnEditLabel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,14 +114,15 @@ public class ListViewAdapter extends BaseAdapter {
                 alert.show();
             }
         });
-        listItem.btnRemoveSample.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Comparer.getInstance().deleteSample(sample);
-                Toast toast = Toast.makeText(context, "Klasa została usunięta", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
+
+//        listItem.btnRemoveSample.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Comparer.getInstance().deleteSample(sample);
+//                Toast toast = Toast.makeText(context, "Klasa została usunięta", Toast.LENGTH_SHORT);
+//                toast.show();
+//            }
+//        });
         this.notifyDataSetChanged();
 
         return row;
