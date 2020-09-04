@@ -3,6 +3,7 @@ package com.example.oslod;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,14 @@ public class ListViewAdapter extends BaseAdapter {
 
     public ArrayList<Sample> listSamples;
     private Context context;
+    private boolean isCatalog;
+    private Model model;
 
-    public ListViewAdapter(Context context, ArrayList<Sample> listSamples) {
+    public ListViewAdapter(Context context, ArrayList<Sample> listSamples, boolean isCatalog) {
         this.context = context;
         this.listSamples = listSamples;
+        this.isCatalog = isCatalog;
+        model = Model.getInstance();
     }
 
     public void setListSamples(ArrayList<Sample> listSamples) {
@@ -72,7 +77,7 @@ public class ListViewAdapter extends BaseAdapter {
             {
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle("Zmiana etykiety");
-                alert.setMessage("Podaj nową etykietę klasy");
+                alert.setMessage("Podaj nową etykietę");
                 final EditText input = new EditText(context);
                 input.setText(sample.getLabel());
                 alert.setView(input);
@@ -85,7 +90,14 @@ public class ListViewAdapter extends BaseAdapter {
                             toast.show();
                         }
                         else {
-                            Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
+                            if(isCatalog) {
+                                model.renameCatalogInInternalMemory(
+                                        listItem.textLabel.getText().toString(), newLabel);
+                            }
+                            else {
+                                model.renameSampleInInternalMemory(
+                                        listItem.textLabel.getText().toString(), newLabel, model.getCurrentCatalog());
+                            }
                             listItem.textLabel.setText(newLabel);
                             Toast toast = Toast.makeText(context, "Etykieta zmieniona", Toast.LENGTH_SHORT);
                             toast.show();
@@ -103,14 +115,20 @@ public class ListViewAdapter extends BaseAdapter {
                 alert.show();
             }
         });
+
         listItem.btnRemoveSample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Comparer.getInstance().deleteSample(sample);
-                Toast toast = Toast.makeText(context, "Klasa została usunięta", Toast.LENGTH_SHORT);
-                toast.show();
+                if(isCatalog) {
+                    model.deleteCatalogFromMemory(listItem.textLabel.getText().toString());
+                }
+                else {
+                    model.deleteSampleFromMemory(
+                            listItem.textLabel.getText().toString(), model.getCurrentCatalog());
+                }
             }
         });
+
         this.notifyDataSetChanged();
 
         return row;

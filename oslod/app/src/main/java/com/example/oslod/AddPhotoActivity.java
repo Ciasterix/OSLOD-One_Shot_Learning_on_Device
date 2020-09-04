@@ -68,7 +68,9 @@ public class AddPhotoActivity extends AppCompatActivity {
             Toast.makeText(this, "Zrób zdjęcie", Toast.LENGTH_LONG).show();
         }
         else {
-            Comparer.getInstance().addNewSample(new Sample(newImageBitmap, label));
+//            Comparer.getInstance().addNewSample(new Sample(newImageBitmap, label));
+            final String catalogName = getIntent().getStringExtra("CATALOG_NAME");
+            Model.getInstance().saveSampleInMemory(new Sample(newImageBitmap, label), catalogName);
             Toast.makeText(this, "Dodano klasę", Toast.LENGTH_LONG).show();
             finish();
         }

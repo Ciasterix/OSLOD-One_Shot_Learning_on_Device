@@ -21,55 +21,16 @@ import java.util.ArrayList;
 
 public class Comparer {
     private static Comparer instance = new Comparer();
-    private final ArrayList<Sample> samples = new ArrayList<>();
+    private ArrayList<Sample> samples = new ArrayList<>();
     private String dirPath;
     private Module module;
 
-    public Comparer() {
-    }
+    public Comparer() {}
 
-    public void loadSamples() {
-        try {
-            File appDir = new File(dirPath);
-            File[] files = appDir.listFiles();
-            for(File f: files) {
-                Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-                String label = f.getName().substring(0, f.getName().length()-4);
-                samples.add(new Sample(b, label));
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void addNewSample(Sample s) {
-        saveSampleToInternalMemory(s);
-        samples.add(s);
-    }
-
-    private void saveSampleToInternalMemory(Sample s) {
-        File sampleFile = new File(dirPath, s.getLabel()+".png");
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(sampleFile);
-            s.getImageBitmap().compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void deleteSample(Sample s) {
-        samples.remove(s);
-        deleteSampleFromInternalMemory(s);
-    }
+//    public void deleteSample(Sample s) {
+//        samples.remove(s);
+//        deleteSampleFromInternalMemory(s);
+//    }
 
     private void deleteSampleFromInternalMemory(Sample s) {
         File sampleFile = new File(dirPath, s.getLabel()+".png");
@@ -135,9 +96,9 @@ public class Comparer {
         return sumProduct / (Math.sqrt(sumASq) * Math.sqrt(sumBSq));
     }
 
-    public void loadModel(Context context, String filename) {
+    public void loadNeuralNet(Context context, String filename) {
         try {
-            module = Module.load(assetFilePath(context, "model.pt"));
+            module = Module.load(assetFilePath(context, filename));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -176,6 +137,10 @@ public class Comparer {
 
     public static Comparer getInstance() {
         return instance;
+    }
+
+    public void setSamples(ArrayList<Sample> samples) {
+        this.samples = samples;
     }
 
     public ArrayList<Sample> getSamples() {
