@@ -32,7 +32,6 @@ public class Model {
 
     public void loadExistingCatalogs() {
         File appDirFiles = new File(appDirPath);
-//        allCatalogs = appDirFiles.listFiles();
         File[] catalogsFiles = appDirFiles.listFiles();
         for(File f: catalogsFiles) {
 //                Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
@@ -78,11 +77,6 @@ public class Model {
         }
     }
 
-//    public void addNewSample(Sample s, ) {
-//        saveSampleToInternalMemory(s);
-//        samples.add(s);
-//    }
-
     public void saveSampleInMemory(Sample s, String catalogName) {
         File catalogFile = new File(appDirPath, catalogName);
         File sampleFile = new File(catalogFile, s.getLabel()+".png");
@@ -98,6 +92,48 @@ public class Model {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void deleteSampleFromMemory(String label, String catalogName) {
+        File catalogFile = new File(appDirPath, catalogName);
+        File sampleFile = new File(catalogFile, label+".png");
+        try {
+            sampleFile.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteCatalogFromMemory(String catalogName) {
+        File catalogFile = new File(appDirPath, catalogName);
+        try {
+            catalogFile.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean renameSampleInInternalMemory(String oldLabel, String newLabel, String catalogName) {
+        File catalogFile = new File(appDirPath, catalogName);
+        File oldSampleFile = new File(catalogFile, oldLabel + ".png");
+        File newSampleFile = new File(catalogFile, newLabel + ".png");
+        if (newSampleFile.exists())
+            return false;
+        else {
+            boolean success = oldSampleFile.renameTo(newSampleFile);
+            return success;
+        }
+    }
+
+    public boolean renameCatalogInInternalMemory(String oldName, String newName) {
+        File oldSampleFile = new File(appDirPath, oldName);
+        File newSampleFile = new File(appDirPath, newName);
+        if (newSampleFile.exists())
+            return false;
+        else {
+            boolean success = oldSampleFile.renameTo(newSampleFile);
+            return success;
         }
     }
 
@@ -129,7 +165,15 @@ public class Model {
         return appDirPath;
     }
 
-//    public void addNewSample(Sample s) {
+    public void setCurrentCatalog(String currentCatalog) {
+        this.currentCatalog = currentCatalog;
+    }
+
+    public String getCurrentCatalog() {
+        return this.currentCatalog;
+    }
+
+    //    public void addNewSample(Sample s) {
 //        saveSampleToInternalMemory(s);
 //        samples.add(s);
 //    }

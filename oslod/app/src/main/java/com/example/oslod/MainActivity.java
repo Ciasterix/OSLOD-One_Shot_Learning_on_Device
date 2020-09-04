@@ -43,13 +43,9 @@ public class MainActivity extends AppCompatActivity {
         model.setDirPath(mainAppDir);
         model.loadExistingCatalogs();
         model.initCurrentData();
-//        model.loadCurrentSamples();
-//        model.loadModel(this, "model.pt");
 
         comparer = Comparer.getInstance();
         comparer.setDirPath(mainAppDir);
-//        comparer.loadSamples();
-//        comparer.loadModel(this, "model.pt");
 
         dropdown = findViewById(R.id.spinnerCatalogs);
         ArrayAdapter<String> adapterSpinnersCatalogs = new ArrayAdapter<String>(this,

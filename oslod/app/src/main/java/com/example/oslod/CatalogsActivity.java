@@ -26,52 +26,27 @@ public class CatalogsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalogs);
         listView = (ListView) findViewById(R.id.customCatalogsListView);
-        final ListViewAdapter listAdapter = new ListViewAdapter(this, model.getCatalogs());
+        final ListViewAdapter listAdapter = new ListViewAdapter(
+                this, model.getCatalogs(), true);
         listView.setAdapter(listAdapter);
         final Context context = this;
 
-//        listView.setClickable(true);
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-//                Toast.makeText(getBaseContext(), "klikk", Toast.LENGTH_SHORT).show();
                 String catalogName = model.getCatalogs().get(position).getLabel();
                 Toast.makeText(getBaseContext(), catalogName, Toast.LENGTH_SHORT).show();
                 Intent browserInten = new Intent(getBaseContext(), BrowserActivity.class);
                 browserInten.putExtra("CATALOG_NAME", catalogName);
+                model.setCurrentCatalog(catalogName);
                 startActivity(browserInten);
             }
         });
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-////                Intent intent = new Intent(getApplicationContext(),ApkInfoActivity.class);
-////                intent.putExtra("name",classes[i]);
-////                startActivity(intent);
-//                    Toast.makeText(CatalogsActivity.this, "klikk", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-//                Toast.makeText(context, "klikk", Toast.LENGTH_SHORT).show();
-//
-////                Intent appInfo = new Intent(YourActivity.this, ApkInfoActivity.class);
-////                startActivity(appInfo);
-//            }
-//        });
 
         btnAddNewCatalog = (Button) findViewById(R.id.btnAddNewCatalog);
         btnAddNewCatalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//              Intent inten = new Intent(getBaseContext(), AddPhotoActivity.class);
-//              startActivity(inten);
-//              Toast toast = Toast.makeText(getBaseContext(), "Nowy katalogus", Toast.LENGTH_SHORT);
-//              toast.show();
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle("Nowa kolekcja");
                 alert.setMessage("Podaj nazwę kolekcji");
@@ -87,8 +62,6 @@ public class CatalogsActivity extends AppCompatActivity {
                             toast.show();
                         } else {
                             boolean success = model.createCatalog(newCatalogName);
-//                            Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
-//                            listItem.textLabel.setText(newLabel);
                             String toastText;
                             if (success) {
                                 toastText = "Utworzono nową kolekcję";
@@ -108,57 +81,8 @@ public class CatalogsActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
-
                 alert.show();
             }
         });
     }
-
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_catalogs);
-//        listViewCatalogs = (ListView) findViewById(R.id.customCatalogsListView);
-//        final ListViewCatalogsAdapter listCatalogsAdapter = new ListViewCatalogsAdapter(this, comparer.getSamples());
-//        listViewCatalogs.setAdapter(listCatalogsAdapter);
-//        btnAddNewCatalog = (Button) findViewById(R.id.btnAddNewCatalog);
-//        btnAddNewCatalog.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                AlertDialog.Builder alert = new AlertDialog.Builder(context);
-//                alert.setTitle("Zmiana etykiety");
-//                alert.setMessage("Podaj nową etykietę klasy");
-//                final EditText input = new EditText(context);
-//                input.setText(sample.getLabel()x);
-//                alert.setView(input);
-//
-//                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        String newLabel = input.getText().toString();
-//                        if(newLabel.equals("")){
-//                            Toast toast = Toast.makeText(context, "Błąd: Podana etykieta jest pusta", Toast.LENGTH_SHORT);
-//                            toast.show();
-//                        }
-//                        else {
-//                            Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
-//                            listItem.textLabel.setText(newLabel);
-//                            Toast toast = Toast.makeText(context, "Etykieta zmieniona", Toast.LENGTH_SHORT);
-//                            toast.show();
-//                        }
-//                    }
-//                });
-//
-//                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        Toast toast = Toast.makeText(context, "Edycja anulowana", Toast.LENGTH_SHORT);
-//                        toast.show();
-//                    }
-//                });
-//
-//                alert.show();
-//            }
-//        });
-//    }
 }

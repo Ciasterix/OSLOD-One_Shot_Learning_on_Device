@@ -26,7 +26,7 @@ public class BrowserActivity extends AppCompatActivity {
         final String catalogName = getIntent().getStringExtra("CATALOG_NAME");
         ArrayList<Sample> samples = model.loadSamplesFromCatalog(catalogName);
 
-        final ListViewAdapter listAdapter = new ListViewAdapter(this, samples);
+        final ListViewAdapter listAdapter = new ListViewAdapter(this, samples, false);
         listView.setAdapter(listAdapter);
 
         btnAddNewSample = (Button) findViewById(R.id.btnPlaceOrder);
@@ -40,32 +40,3 @@ public class BrowserActivity extends AppCompatActivity {
         });
     }
 }
-
-//public class Score extends AppCompatActivity {
-//
-//
-//    ListView listView;
-//
-//
-//    @Override
-//    protected void onCreate(final Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_score);
-//        listView = (ListView) findViewById(lstRanking);
-//
-//
-//        final DbHelper db = new DbHelper(this);
-//        final List<Ranking> listRanking = db.getRanking();
-//        if (listRanking.size() > 0) {
-//            final CustomAdapter adapter = new CustomAdapter(this, listRanking);
-//            listView.setAdapter(adapter);
-//
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    listRanking.remove(position);
-//
-//                    adapter.notifyDataSetChanged();
-//
-//                }
-//            });

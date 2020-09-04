@@ -17,10 +17,14 @@ public class ListViewAdapter extends BaseAdapter {
 
     public ArrayList<Sample> listSamples;
     private Context context;
+    private boolean isCatalog;
+    private Model model;
 
-    public ListViewAdapter(Context context, ArrayList<Sample> listSamples) {
+    public ListViewAdapter(Context context, ArrayList<Sample> listSamples, boolean isCatalog) {
         this.context = context;
         this.listSamples = listSamples;
+        this.isCatalog = isCatalog;
+        model = Model.getInstance();
     }
 
     public void setListSamples(ArrayList<Sample> listSamples) {
@@ -54,7 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
             listItem.textLabel = row.findViewById(R.id.txtLabel);
             listItem.imgSample = row.findViewById(R.id.imgSample);
             listItem.btnEditLabel = row.findViewById(R.id.btnEditLabel);
-//            listItem.btnRemoveSample = row.findViewById(R.id.btnRemove);
+            listItem.btnRemoveSample = row.findViewById(R.id.btnRemove);
             row.setTag(listItem);
         }
         else
@@ -67,23 +71,13 @@ public class ListViewAdapter extends BaseAdapter {
         listItem.textLabel.setText(sample.getLabel());
         listItem.imgSample.setImageBitmap(sample.getImageBitmap());
 
-//        listItem.textLabel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-////                Intent inten = new Intent(getBaseContext(), BrowserActivity.class);
-////                startActivity(inten);
-//                Toast.makeText(context, listItem.textLabel.getText(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         listItem.btnEditLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle("Zmiana etykiety");
-                alert.setMessage("Podaj nową etykietę klasy");
+                alert.setMessage("Podaj nową etykietę");
                 final EditText input = new EditText(context);
                 input.setText(sample.getLabel());
                 alert.setView(input);
@@ -96,7 +90,14 @@ public class ListViewAdapter extends BaseAdapter {
                             toast.show();
                         }
                         else {
-                            Comparer.getInstance().changeLabel(listItem.textLabel.getText().toString(), newLabel);
+                            if(isCatalog) {
+                                model.renameCatalogInInternalMemory(
+                                        listItem.textLabel.getText().toString(), newLabel);
+                            }
+                            else {
+                                model.renameSampleInInternalMemory(
+                                        listItem.textLabel.getText().toString(), newLabel, model.getCurrentCatalog());
+                            }
                             listItem.textLabel.setText(newLabel);
                             Toast toast = Toast.makeText(context, "Etykieta zmieniona", Toast.LENGTH_SHORT);
                             toast.show();
@@ -115,14 +116,19 @@ public class ListViewAdapter extends BaseAdapter {
             }
         });
 
-//        listItem.btnRemoveSample.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Comparer.getInstance().deleteSample(sample);
-//                Toast toast = Toast.makeText(context, "Klasa została usunięta", Toast.LENGTH_SHORT);
-//                toast.show();
-//            }
-//        });
+        listItem.btnRemoveSample.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isCatalog) {
+                    model.deleteCatalogFromMemory(listItem.textLabel.getText().toString());
+                }
+                else {
+                    model.deleteSampleFromMemory(
+                            listItem.textLabel.getText().toString(), model.getCurrentCatalog());
+                }
+            }
+        });
+
         this.notifyDataSetChanged();
 
         return row;
