@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 public class CatalogsActivity extends AppCompatActivity {
     private ListView listView;
-    private ListViewAdapter listAdapter;
     Button btnAddNewCatalog;
     Model model = Model.getInstance();
 

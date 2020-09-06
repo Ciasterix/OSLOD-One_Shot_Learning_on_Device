@@ -12,9 +12,7 @@ import java.util.ArrayList;
 
 public class BrowserActivity extends AppCompatActivity {
     private ListView listView;
-    private ListViewAdapter listAdapter;
     Button btnAddNewSample;
-    Comparer comparer = Comparer.getInstance();
     Model model = Model.getInstance();
 
     @Override

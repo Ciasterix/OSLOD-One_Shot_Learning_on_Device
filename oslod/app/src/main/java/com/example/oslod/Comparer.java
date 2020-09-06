@@ -17,47 +17,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class Comparer {
     private static Comparer instance = new Comparer();
     private ArrayList<Sample> samples = new ArrayList<>();
     private String dirPath;
+    private ArrayList<Result> fullResults;
     private Module module;
 
     public Comparer() {}
-
-//    public void deleteSample(Sample s) {
-//        samples.remove(s);
-//        deleteSampleFromInternalMemory(s);
-//    }
-
-    private void deleteSampleFromInternalMemory(Sample s) {
-        File sampleFile = new File(dirPath, s.getLabel()+".png");
-        try {
-            sampleFile.delete();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void changeLabel(String oldLabel, String newLabel) {
-        for(Sample s: samples) {
-            if (s.getLabel().equals(oldLabel)) s.setLabel(newLabel);
-        }
-        renameSampleInInternalMemory(oldLabel, newLabel);
-    }
-
-    public boolean renameSampleInInternalMemory(String oldLabel, String newLabel) {
-        File oldSampleFile = new File(dirPath, oldLabel + ".png");
-        File newSampleFile = new File(dirPath, newLabel + ".png");
-        if (newSampleFile.exists())
-            return false;
-        else {
-            boolean success = oldSampleFile.renameTo(newSampleFile);
-            return success;
-        }
-    }
 
     public float[] predictScores(Bitmap unknownImage) {
         float[] unkownSampleScores = runPrediction(unknownImage);
@@ -117,6 +88,20 @@ public class Comparer {
         return maxSimLabel;
     }
 
+    public void storeFullResults(float[] scores) {
+        fullResults = new ArrayList<Result>();
+        TreeMap<Float, Sample> resultsMap = new TreeMap();
+//        TreeMap<Float, String> tm = new TreeMap<>();
+        for (int i = 0; i < scores.length; i++) {
+            resultsMap.put(scores[i], samples.get(i));
+        }
+        for(Map.Entry<Float, Sample> entry : resultsMap.entrySet()) {
+            Float score = entry.getKey();
+            Sample sample = entry.getValue();
+            fullResults.add(0, new Result(score, sample));
+        }
+    }
+
     public static String assetFilePath(Context context, String assetName) throws IOException {
         File file = new File(context.getFilesDir(), assetName);
         if (file.exists() && file.length() > 0) {
@@ -153,5 +138,9 @@ public class Comparer {
 
     public String getDirPath() {
         return dirPath;
+    }
+
+    public ArrayList<Result> getFullResults() {
+        return fullResults;
     }
 }

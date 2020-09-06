@@ -12,11 +12,8 @@ import java.util.ArrayList;
 
 public class Model {
     private static Model instance = new Model();
-//    private final ArrayList<File> allCatalogs = new ArrayList<>();
-//    private File[] allCatalogs;
     private ArrayList<Sample> currentSamples = new ArrayList<>();
     private ArrayList<Sample> catalogs = new ArrayList<>();
-    //    private File currentCatalog;
     private String currentCatalog = null;
     private String appDirPath;
 
@@ -173,9 +170,8 @@ public class Model {
         return this.currentCatalog;
     }
 
-    //    public void addNewSample(Sample s) {
-//        saveSampleToInternalMemory(s);
-//        samples.add(s);
-//    }
+    public void setCurrentSamples(ArrayList<Sample> currentSamples) {
+        this.currentSamples = currentSamples;
+    }
 
 }
