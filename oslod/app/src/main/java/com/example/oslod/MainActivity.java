@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,9 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private Button btnCapture;
     private Button btnBrowse;
+    private Button btnFullResults;
     private ImageView imgCapture;
     private static final int Image_Capture_Code = 1;
     private String mainAppDir;
@@ -37,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
         btnCapture = findViewById(R.id.btnTakePicture);
         btnBrowse = findViewById(R.id.btnBrowseImages);
         imgCapture = findViewById(R.id.newImage);
+        btnFullResults = findViewById(R.id.btnFullResults);
         txtPredLabel = findViewById(R.id.textPredictedLabel);
+
+        btnFullResults.setEnabled(false);
 
         model = Model.getInstance();
         model.setDirPath(mainAppDir);
@@ -50,11 +55,7 @@ public class MainActivity extends AppCompatActivity {
         dropdown = findViewById(R.id.spinnerCatalogs);
         ArrayAdapter<String> adapterSpinnersCatalogs = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, model.getCatalogsNames());
-//        ArrayAdapter<String> adapterSpinnersCatalogs = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-
         dropdown.setAdapter(adapterSpinnersCatalogs);
-//        Toast.makeText(getBaseContext(), dropdown.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,8 +68,15 @@ public class MainActivity extends AppCompatActivity {
         btnBrowse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent inten = new Intent(getBaseContext(), BrowserActivity.class);
                 Intent inten = new Intent(getBaseContext(), CatalogsActivity.class);
+                startActivity(inten);
+            }
+        });
+
+        btnFullResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent inten = new Intent(getBaseContext(), FullResultsActivity.class);
                 startActivity(inten);
             }
         });
@@ -82,9 +90,16 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
                 imgCapture.setImageBitmap(bp);
                 comparer.loadNeuralNet(this, "model.pt");
-                comparer.setSamples(model.loadSamplesFromCatalog(dropdown.getSelectedItem().toString()));
+
+                ArrayList<Sample> samples = model.loadSamplesFromCatalog(dropdown.getSelectedItem().toString());
+                model.setCurrentSamples(samples);
+                comparer.setSamples(samples);
+
                 float[] similarities = comparer.predictScores(bp);
                 String classLabel = comparer.getMostSimilarClass(similarities);
+                comparer.storeFullResults(similarities);
+                btnFullResults.setEnabled(true);
+
                 txtPredLabel.setText(classLabel);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Anulowano", Toast.LENGTH_LONG).show();
