@@ -1,6 +1,6 @@
 import itertools
 import math
-from typing import List, Any
+from typing import List
 
 import cv2
 import numpy as np
@@ -20,10 +20,10 @@ def transform_func(images: List[np.ndarray]) -> np.ndarray:
     return transformed_images
 
 
-def load_images(paths: str) -> np.ndarray:
+def load_images(paths: str, size: int) -> np.ndarray:
     images = []
     for path in paths:
-        img = cv2.resize(cv2.imread(path), (224, 224))
+        img = cv2.resize(cv2.imread(path), (size, size))
         images.append(img / img.max())
     transformed_images = transform_func(images)
     return transformed_images

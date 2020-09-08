@@ -4,8 +4,8 @@ from glob import glob
 import numpy as np
 import torch as T
 
-from src import models
-from src.utils import load_images, test_score
+import models
+from utils import load_images, test_score
 
 if __name__ == "__main__":
     model_name = "BiT-M-R50x1"

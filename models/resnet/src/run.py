@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torchvision
 
-from src.utils import load_images, test_score
+from utils import load_images, test_score
 
 if __name__ == "__main__":
     model = torchvision.models.resnet18(pretrained=True)  # 0.859, 0.906

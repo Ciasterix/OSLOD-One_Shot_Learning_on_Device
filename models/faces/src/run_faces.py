@@ -6,7 +6,7 @@ import torch
 
 from Learner import face_learner
 from config import get_config
-from src.utils import load_images, test_score
+from utils import load_images, test_score
 
 if __name__ == "__main__":
     conf = get_config(False)
