@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,8 +28,17 @@ public class Comparer {
     private String dirPath;
     private ArrayList<Result> fullResults;
     private Module module;
+    private static HashMap<String, String> neuralNetFiles = new HashMap<>();
+    private String currentNeuralNetName;
 
-    public Comparer() {}
+    static {
+        neuralNetFiles.put("przedmioty", "model.pt");
+        neuralNetFiles.put("twarze", "face_model.pt");
+        neuralNetFiles.put("rośliny", "flowers");
+    }
+
+    public Comparer() {
+    }
 
     public float[] predictScores(Bitmap unknownImage) {
         float[] unkownSampleScores = runPrediction(unknownImage);
@@ -41,6 +51,9 @@ public class Comparer {
     }
 
     public float[] runPrediction(Bitmap bitmap) {
+        if(currentNeuralNetName == "twarze") {
+            bitmap = Bitmap.createScaledBitmap(bitmap, 112, 112, false);
+        }
         final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
         final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
@@ -67,9 +80,11 @@ public class Comparer {
         return sumProduct / (Math.sqrt(sumASq) * Math.sqrt(sumBSq));
     }
 
-    public void loadNeuralNet(Context context, String filename) {
+    public void loadNeuralNet(Context context, String netName) {
+        currentNeuralNetName = netName;
+        String netFile = neuralNetFiles.get(netName);
         try {
-            module = Module.load(assetFilePath(context, filename));
+            module = Module.load(assetFilePath(context, netFile));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -91,7 +106,6 @@ public class Comparer {
     public void storeFullResults(float[] scores) {
         fullResults = new ArrayList<Result>();
         TreeMap<Float, Sample> resultsMap = new TreeMap();
-//        TreeMap<Float, String> tm = new TreeMap<>();
         for (int i = 0; i < scores.length; i++) {
             resultsMap.put(scores[i], samples.get(i));
         }
