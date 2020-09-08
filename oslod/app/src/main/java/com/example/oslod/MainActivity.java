@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnCapture;
@@ -25,9 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int Image_Capture_Code = 1;
     private String mainAppDir;
     private TextView txtPredLabel;
-    Spinner dropdown;
+    Spinner dropdownCatalogs;
+    Spinner dropdownNetworks;
     Comparer comparer;
     Model model;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +55,19 @@ public class MainActivity extends AppCompatActivity {
         comparer = Comparer.getInstance();
         comparer.setDirPath(mainAppDir);
 
-        dropdown = findViewById(R.id.spinnerCatalogs);
+        dropdownCatalogs = findViewById(R.id.spinnerCatalogs);
         ArrayAdapter<String> adapterSpinnersCatalogs = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, model.getCatalogsNames());
-        dropdown.setAdapter(adapterSpinnersCatalogs);
+        dropdownCatalogs.setAdapter(adapterSpinnersCatalogs);
+
+        ArrayList<String> networkNames = new ArrayList<>();
+        networkNames.add("przedmioty");
+        networkNames.add("twarze");
+        networkNames.add("rośliny");
+        dropdownNetworks = findViewById(R.id.spinnerNetworks);
+        ArrayAdapter<String> adapterSpinnersNetworks = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, networkNames);
+        dropdownNetworks.setAdapter(adapterSpinnersNetworks);
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,9 +101,11 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
                 imgCapture.setImageBitmap(bp);
-                comparer.loadNeuralNet(this, "model.pt");
+                comparer.loadNeuralNet(
+                        this, dropdownNetworks.getSelectedItem().toString());
 
-                ArrayList<Sample> samples = model.loadSamplesFromCatalog(dropdown.getSelectedItem().toString());
+                ArrayList<Sample> samples = model.loadSamplesFromCatalog(
+                        dropdownCatalogs.getSelectedItem().toString());
                 model.setCurrentSamples(samples);
                 comparer.setSamples(samples);
 
