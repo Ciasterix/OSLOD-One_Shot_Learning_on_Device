@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,9 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnCapture;
-    private Button btnBrowse;
-    private Button btnFullResults;
+    private ImageButton btnCapture;
+    private ImageButton btnBrowse;
+    private ImageButton btnFullResults;
     private ImageView imgCapture;
     private static final int Image_Capture_Code = 1;
     private String mainAppDir;
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         mainAppDir = cw.getDir("oslodDataCatalogs", Context.MODE_PRIVATE).getAbsolutePath();
-        Toast.makeText(this, mainAppDir, Toast.LENGTH_LONG).show();
         btnCapture = findViewById(R.id.btnTakePicture);
         btnBrowse = findViewById(R.id.btnBrowseImages);
         imgCapture = findViewById(R.id.newImage);
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         dropdownCatalogs = findViewById(R.id.spinnerCatalogs);
         ArrayAdapter<String> adapterSpinnersCatalogs = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, model.getCatalogsNames());
+                android.R.layout.simple_spinner_dropdown_item, model.getCatalogsNames());
         dropdownCatalogs.setAdapter(adapterSpinnersCatalogs);
 
         ArrayList<String> networkNames = new ArrayList<>();
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         networkNames.add("rośliny");
         dropdownNetworks = findViewById(R.id.spinnerNetworks);
         ArrayAdapter<String> adapterSpinnersNetworks = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, networkNames);
+                android.R.layout.simple_spinner_dropdown_item, networkNames);
         dropdownNetworks.setAdapter(adapterSpinnersNetworks);
 
         btnCapture.setOnClickListener(new View.OnClickListener() {

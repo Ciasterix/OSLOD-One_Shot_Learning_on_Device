@@ -9,12 +9,13 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class AddPhotoActivity extends AppCompatActivity {
-    Button btnCapture;
-    Button btnSave;
+    ImageButton btnCapture;
+    ImageButton btnSave;
     EditText txtLabel;
     private ImageView imgView;
     private Bitmap newImageBitmap;
