@@ -6,18 +6,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class CatalogsActivity extends AppCompatActivity {
     private ListView listView;
-    Button btnAddNewCatalog;
+    private ImageButton btnAddNewCatalog;
     Model model = Model.getInstance();
 
     @Override
@@ -25,8 +28,13 @@ public class CatalogsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalogs);
         listView = (ListView) findViewById(R.id.customCatalogsListView);
+        ArrayList<Sample> catals = model.getCatalogs();
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.directoryfoldericon);
+        for (Sample s: catals) {
+            s.setImageBitmap(bm);
+        }
         final ListViewAdapter listAdapter = new ListViewAdapter(
-                this, model.getCatalogs(), true);
+                this, catals, true);
         listView.setAdapter(listAdapter);
         final Context context = this;
 
@@ -34,7 +42,7 @@ public class CatalogsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 String catalogName = model.getCatalogs().get(position).getLabel();
-                Toast.makeText(getBaseContext(), catalogName, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), catalogName, Toast.LENGTH_SHORT).show();
                 Intent browserInten = new Intent(getBaseContext(), BrowserActivity.class);
                 browserInten.putExtra("CATALOG_NAME", catalogName);
                 model.setCurrentCatalog(catalogName);
@@ -42,7 +50,7 @@ public class CatalogsActivity extends AppCompatActivity {
             }
         });
 
-        btnAddNewCatalog = (Button) findViewById(R.id.btnAddNewCatalog);
+        btnAddNewCatalog = findViewById(R.id.btnAddNewCatalog);
         btnAddNewCatalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
